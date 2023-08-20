@@ -1,0 +1,33 @@
+#include <BluetoothSerial.h>
+
+BluetoothSerial SerialBT;
+
+const int LED_PIN = 2; // Pin del LED incorporado
+
+void setup() {
+  Serial.begin(115200);
+  SerialBT.begin("LEDCONTROL");
+  pinMode(LED_PIN, OUTPUT); // Configurar el pin del LED incorporado como salida
+  digitalWrite(LED_PIN, LOW); // Asegurarse de que el LED esté apagado al inicio
+  Serial.println("Conectado!");
+}
+
+void loop() {
+  if (Serial.available()) {
+    char command = Serial.read(); // Leer el comando recibido
+
+    if (command == '1') {
+      digitalWrite(LED_PIN, HIGH); // Encender el LED
+      SerialBT.println("LED encendido");
+    } else if (command == '0') {
+      digitalWrite(LED_PIN, LOW); // Apagar el LED
+      SerialBT.println("LED apagado");
+    }
+  }
+
+  if (SerialBT.available()) {
+    Serial.write(SerialBT.read());
+  }
+
+  delay(20);
+}
